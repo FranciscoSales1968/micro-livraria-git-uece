@@ -28,7 +28,7 @@ jobs:
     - uses: azure/docker-login@v1
       with:
         login-server: ${{ env.REGISTRY_NAME }}.docker.io
-        username: ${{ env.REGISTRY_USERNAME }} 
+        username: ${{ secrets.REGISTRY_USERNAME }} 
         password: ${{ secrets.REGISTRY_PASSWORD }}
     
     # Container build and push to a Docker
@@ -64,7 +64,7 @@ jobs:
     - uses: azure/k8s-create-secret@v1
       with:
         container-registry-url: ${{ env.REGISTRY_NAME }}.docker.io
-        container-registry-username: ${{ env.REGISTRY_USERNAME }}
+        container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
         container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
         secret-name: ${{ env.SECRET }}
         namespace: ${{ env.NAMESPACE }}
