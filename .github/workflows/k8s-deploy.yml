@@ -1,0 +1,87 @@
+name: "Kubernetes controller"
+
+on: [push]
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  REGISTRY_NAME: igorira
+  CLUSTER_NAME: micro-livraria-cls
+  CLUSTER_RESOURCE_GROUP: rg-eesdevops-dev-main
+  NAMESPACE: eesdevops-namespace
+  SECRET: micro-livraria-cr
+  APP_NAME_CONTROLLER: micro-livraria-controller
+  APP_NAME_FRONTEND: micro-livraria-frontend
+  APP_NAME_INVENTORY: micro-livraria-inventory
+  APP_NAME_SHIPPING: micro-livraria-shipping
+  BUILD_FILE_CONTROLLER: services/controller
+  BUILD_FILE_FRONTEND: services/frontend
+  BUILD_FILE_INVENTORY: services/inventory
+  BUILD_FILE_SHIPPING: services/shipping
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    - id: action
+    
+    # Connect to Azure Container registry (ACR)
+    - uses: azure/docker-login@v1
+        with:
+        login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }} 
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    
+    # Container build and push to a Azure Container registry (ACR)
+    # Controller
+    - run: |
+        docker build ${{ env.BUILD_FILE_CONTROLLER }} -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
+    # Frontend
+    - run: |
+        docker build ${{ env.BUILD_FILE_FRONTEND }} -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
+    # Inventory
+    - run: |
+        docker build ${{ env.BUILD_FILE_INVENTORY }} -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
+    # Shipping
+    - run: |
+        docker build ${{ env.BUILD_FILE_SHIPPING }} -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
+    
+    # Set the target Azure Kubernetes Service (AKS) cluster. 
+    - uses: azure/aks-set-context@v1
+        with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        cluster-name: ${{ env.CLUSTER_NAME }}
+        resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+    
+    # Create namespace if doesn't exist
+    - run: |
+        kubectl create namespace ${{ env.NAMESPACE }} --dry-run -o json | kubectl apply -f -
+    
+    # Create image pull secret for ACR
+    - uses: azure/k8s-create-secret@v1
+        with:
+        container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
+        container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+        secret-name: ${{ env.SECRET }}
+        namespace: ${{ env.NAMESPACE }}
+        force: true
+    
+    # Deploy app to AKS
+    - uses: azure/k8s-deploy@v1
+        with:
+        manifests: |
+            manifests/deployment.yml
+            manifests/service.yml
+        images: |
+            ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
+            ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
+            ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
+            ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
+        imagepullsecrets: |
+            ${{ env.SECRET }}
+        namespace: ${{ env.NAMESPACE }}
