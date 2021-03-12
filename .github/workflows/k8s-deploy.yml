@@ -4,7 +4,7 @@ on: [push]
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  REGISTRY_NAME: eesdevops-igorira
+  REGISTRY_NAME: eesdevops-igor
   CLUSTER_NAME: micro-livraria-cls
   CLUSTER_RESOURCE_GROUP: rg-eesdevops-dev-main
   NAMESPACE: eesdevops-namespace
