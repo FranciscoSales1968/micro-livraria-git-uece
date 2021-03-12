@@ -13,10 +13,10 @@ env:
   APP_NAME_FRONTEND: micro-livraria-frontend
   APP_NAME_INVENTORY: micro-livraria-inventory
   APP_NAME_SHIPPING: micro-livraria-shipping
-  BUILD_FILE_CONTROLLER: services/controller
-  BUILD_FILE_FRONTEND: services/frontend
-  BUILD_FILE_INVENTORY: services/inventory
-  BUILD_FILE_SHIPPING: services/shipping
+  BUILD_FILE_CONTROLLER: ./services/controller
+  BUILD_FILE_FRONTEND: ./services/frontend
+  BUILD_FILE_INVENTORY: ./services/inventory
+  BUILD_FILE_SHIPPING: ./services/shipping
   
 jobs:
   build:
@@ -34,6 +34,7 @@ jobs:
       id: docker_build_controller
       uses: docker/build-push-action@v2
       with:
+        context: ${{ BUILD_FILE_CONTROLLER }}
         push: true
         tags: ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
 
@@ -41,6 +42,7 @@ jobs:
       id: docker_build_frontend
       uses: docker/build-push-action@v2
       with:
+        context: ${{ BUILD_FILE_FRONTEND }}
         push: true
         tags: ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
 
@@ -48,6 +50,7 @@ jobs:
       id: docker_build_inventory
       uses: docker/build-push-action@v2
       with:
+        context: ${{ BUILD_FILE_INVENTORY }}
         push: true
         tags: ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
 
@@ -55,6 +58,7 @@ jobs:
       id: docker_build_shipping
       uses: docker/build-push-action@v2
       with:
+        context: ${{ BUILD_FILE_SHIPPING }}
         push: true
         tags: ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
     
