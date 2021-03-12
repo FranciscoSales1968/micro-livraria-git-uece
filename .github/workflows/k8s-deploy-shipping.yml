@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@main
     - id: action
-      uses: ./.github/actions/deploy-actions@v1
+      uses: ./.github/actions/deploy-actions
       with:
         REGISTRY_NAME: ${{ env.REGISTRY_NAME }} 
         CLUSTER_NAME: ${{ env.CLUSTER_NAME }} 
