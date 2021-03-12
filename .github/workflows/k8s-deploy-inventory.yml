@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@main
-    - id: action-${{ APP_NAME }}
+    - id: 'action-${{ env.APP_NAME }}'
       uses: ./.github/actions/deploy-actions@v1
       with:
         REGISTRY_NAME: ${{ env.REGISTRY_NAME }} 
