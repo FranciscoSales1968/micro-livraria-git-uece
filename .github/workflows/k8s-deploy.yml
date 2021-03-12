@@ -27,27 +27,27 @@ jobs:
     # Connect to Docker
     - uses: azure/docker-login@v1
       with:
-        login-server: ${{ env.REGISTRY_NAME }}.docker.io
+        login-server: index.docker.io
         username: ${{ secrets.REGISTRY_USERNAME }} 
         password: ${{ secrets.REGISTRY_PASSWORD }}
     
     # Container build and push to a Docker
     # Controller
     - run: |
-        docker build ${{ env.BUILD_FILE_CONTROLLER }} -t ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
-        docker push ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
+        docker build ${{ env.BUILD_FILE_CONTROLLER }} -t ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
     # Frontend
     - run: |
-        docker build ${{ env.BUILD_FILE_FRONTEND }} -t ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
-        docker push ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
+        docker build ${{ env.BUILD_FILE_FRONTEND }} -t ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
     # Inventory
     - run: |
-        docker build ${{ env.BUILD_FILE_INVENTORY }} -t ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
-        docker push ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
+        docker build ${{ env.BUILD_FILE_INVENTORY }} -t ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
     # Shipping
     - run: |
-        docker build ${{ env.BUILD_FILE_SHIPPING }} -t ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
-        docker push ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
+        docker build ${{ env.BUILD_FILE_SHIPPING }} -t ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
+        docker push ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
     
     # Set the target Azure Kubernetes Service (AKS) cluster. 
     - uses: azure/aks-set-context@v1
@@ -63,7 +63,7 @@ jobs:
     # Create image pull secret for ACR
     - uses: azure/k8s-create-secret@v1
       with:
-        container-registry-url: ${{ env.REGISTRY_NAME }}.docker.io
+        container-registry-url: index.docker.io
         container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
         container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
         secret-name: ${{ env.SECRET }}
