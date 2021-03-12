@@ -34,7 +34,7 @@ jobs:
       id: docker_build_controller
       uses: docker/build-push-action@v2
       with:
-        context: ${{ BUILD_FILE_CONTROLLER }}
+        context: ${{ env.BUILD_FILE_CONTROLLER }}
         push: true
         tags: ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
 
@@ -42,7 +42,7 @@ jobs:
       id: docker_build_frontend
       uses: docker/build-push-action@v2
       with:
-        context: ${{ BUILD_FILE_FRONTEND }}
+        context: ${{ env.BUILD_FILE_FRONTEND }}
         push: true
         tags: ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
 
@@ -50,7 +50,7 @@ jobs:
       id: docker_build_inventory
       uses: docker/build-push-action@v2
       with:
-        context: ${{ BUILD_FILE_INVENTORY }}
+        context: ${{ env.BUILD_FILE_INVENTORY }}
         push: true
         tags: ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
 
@@ -58,7 +58,7 @@ jobs:
       id: docker_build_shipping
       uses: docker/build-push-action@v2
       with:
-        context: ${{ BUILD_FILE_SHIPPING }}
+        context: ${{ env.BUILD_FILE_SHIPPING }}
         push: true
         tags: ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
     
