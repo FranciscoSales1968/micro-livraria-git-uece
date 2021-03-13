@@ -87,8 +87,7 @@ jobs:
     - uses: azure/k8s-deploy@v1
       with:
         manifests: |
-            manifests/deployment.yml
-            manifests/service.yml
+            k8s
         images: |
             ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
             ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
