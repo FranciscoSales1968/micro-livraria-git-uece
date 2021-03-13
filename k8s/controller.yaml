@@ -15,7 +15,7 @@ spec:
         app: controller
     spec:
       containers:
-      - image: cmendes/livraria-controller
+      - image: igorira/micro-livraria-controller
         imagePullPolicy: "Always"
         name: controller
         ports:

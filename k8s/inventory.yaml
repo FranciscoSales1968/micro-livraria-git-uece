@@ -15,7 +15,7 @@ spec:
         app: inventory
     spec:
       containers:
-      - image: cmendes/livraria-inventory
+      - image: igorira/micro-livraria-inventory
         imagePullPolicy: "Always"
         name: inventory
         ports:
