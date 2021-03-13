@@ -83,16 +83,47 @@ jobs:
         namespace: ${{ env.NAMESPACE }}
         force: true
     
-    # Deploy app to AKS
-    - uses: azure/k8s-deploy@v1
+    - name: Deploy app controller to AKS
+      uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+            k8s/controller-svc.yaml
+            k8s/controller.yaml
+        images: |
+            ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
+        imagepullsecrets: |
+            ${{ env.SECRET }}
+        namespace: ${{ env.NAMESPACE }}
+        
+    - name: Deploy app frontend to AKS
+      uses: azure/k8s-deploy@v1
       with:
         manifests: |
             k8s
         images: |
-            ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_CONTROLLER }}:${{ github.sha }}
-            ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
-            ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
-            ${{ env.REGISTRY_NAME }}.docker.io/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
+            ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_FRONTEND }}:${{ github.sha }}
+        imagepullsecrets: |
+            ${{ env.SECRET }}
+        namespace: ${{ env.NAMESPACE }}
+
+    - name: Deploy app inventory to AKS
+      uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+            k8s
+        images: |
+            ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_INVENTORY }}:${{ github.sha }}
+        imagepullsecrets: |
+            ${{ env.SECRET }}
+        namespace: ${{ env.NAMESPACE }}
+
+    - name: Deploy app shipping to AKS
+      uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+            k8s
+        images: |
+            ${{ env.REGISTRY_NAME }}/${{ env.APP_NAME_SHIPPING }}:${{ github.sha }}
         imagepullsecrets: |
             ${{ env.SECRET }}
         namespace: ${{ env.NAMESPACE }}
