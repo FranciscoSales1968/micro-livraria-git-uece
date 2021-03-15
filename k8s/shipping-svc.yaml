@@ -10,3 +10,5 @@ spec:
     targetPort: 3001
   selector:
     app: shipping
+
+# shipping.eesdevops-namespace.svc.cluster.local:3001
