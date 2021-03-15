@@ -22,6 +22,6 @@ spec:
         - containerPort: 3000
         env:
         - name: INVENTORY_HOST
-          value: http://inventory.eesdevops-namespace.svc.cluster.local:3002
+          value: http://inventory.eesdevops-namespace:3002
         - name: SHIPPING_HOST
-          value: http://shipping.eesdevops-namespace.svc.cluster.local:3001
+          value: http://shipping.eesdevops-namespace:3001
