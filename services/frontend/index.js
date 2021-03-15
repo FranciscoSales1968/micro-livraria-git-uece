@@ -36,7 +36,7 @@ function newBook(book) {
 }
 
 function calculateShipping(id, cep) {
-    fetch('http://52.142.16.76:3000/shipping/' + cep)
+    fetch('http://52.142.33.50:3000/shipping/' + cep)
         .then((data) => {
             if (data.ok) {
                 return data.json();
@@ -55,7 +55,7 @@ function calculateShipping(id, cep) {
 document.addEventListener('DOMContentLoaded', function () {
     const books = document.querySelector('.books');
 
-    fetch('http://52.142.16.76:3000/products')
+    fetch('http://52.142.33.50:3000/products')
         .then((data) => {
             if (data.ok) {
                 return data.json();
